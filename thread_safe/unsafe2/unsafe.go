@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"sync/atomic"
+	"sync"
 )
 
 const (
@@ -10,20 +10,18 @@ const (
 )
 
 func main() {
-	m := []int32{0}
+	m := make([]int32, 0, 100)
 
-	go func() {
-		var i int32 = 0
-		for {
+	wg := &sync.WaitGroup{}
+
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go func(i int32) {
+			defer wg.Done()
 			m = append(m, i)
-			atomic.AddInt32(&i, 1)
-			log.Printf("a: %d", i)
-		}
-	}()
-
-	var i int32 = 0
-	for {
-		m = append(m, i)
-		atomic.AddInt32(&i, 1)
+		}(int32(i))
 	}
+
+	wg.Wait()
+	log.Println(len(m))
 }
