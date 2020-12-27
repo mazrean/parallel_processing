@@ -5,10 +5,6 @@ import (
 	"sync/atomic"
 )
 
-const (
-	routineNum = 4
-)
-
 type hoge struct {
 	hoge int32
 	huga int32
