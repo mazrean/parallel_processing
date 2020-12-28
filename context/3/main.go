@@ -7,11 +7,7 @@ import (
 )
 
 func despair(ctx context.Context) {
-	innerCtx, cancel := context.WithCancel(ctx)
-	//この時点でエラーが発生。
-	fmt.Println("error!")
-	//cancel
-	cancel()
+	innerCtx, _ := context.WithCancel(ctx)
 	for {
 		fmt.Println("Help me!")
 
@@ -27,18 +23,18 @@ func despair(ctx context.Context) {
 func main() {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
 
 	go despair(ctx)
 
 	time.Sleep(time.Second * 1)
+	//この時点でエラーが発生。
+	fmt.Println("error!")
+	//despairに知らされる
+	cancel()
 
 	select {
-	case _ = <-ctx.Done():
+	case <-ctx.Done():
 		fmt.Println(ctx.Err())
-	default:
-		//親は何も分からない
-		fmt.Println("???")
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Second * 1)
 	}
 }

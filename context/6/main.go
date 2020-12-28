@@ -8,7 +8,7 @@ import (
 
 func despair(ctx context.Context) {
 	for {
-		fmt.Println("Help me!")
+		fmt.Println(ctx.Value("neko").(string))
 
 		select {
 		case _ = <-ctx.Done():
@@ -21,6 +21,7 @@ func despair(ctx context.Context) {
 
 func main() {
 	ctx := context.Background()
+	ctx = context.WithValue(ctx, "neko", "mya~")
 	ctx, cancel := context.WithTimeout(ctx, time.Second*1)
 	defer cancel()
 
